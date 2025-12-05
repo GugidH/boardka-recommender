@@ -12,13 +12,17 @@ def recommend_games(
     desired_tags: List[str],
     desired_difficulty: Optional[int] = None,
     top_k: int = 5,
+    preferred_tags: Optional[List[str]] = None,  # 선호 태그 (GUI에서 넘겨줄 수 있음)
 ) -> List[Tuple[Game, float]]:
 
-    scored = []
+    # preferred_tags가 None이면 빈 리스트로 처리
+    if preferred_tags is None:
+        preferred_tags = []
+
+    scored: List[Tuple[Game, float]] = []
 
     for g in games:
-        
-        # 인원 필터 필수
+        # 인원 필터 (필수)
         if not g.supports_player_count(players):
             continue
 
@@ -37,17 +41,19 @@ def recommend_games(
             # 시간 입력이 없으면 페널티 없이 포함
             penalty = 1.0
 
-        # 기본 점수 계산
+        # 기본 점수 계산 (태그 + 난이도)
         base_score = score_game(
-            game=g,
-            desired_tags=desired_tags,
+            g,
+            selected_tags=desired_tags,
+            preferred_tags=preferred_tags,
             desired_difficulty=desired_difficulty,
         )
 
-        # 최종 점수
+        # 최종 점수 = 기본 점수 × 시간 페널티
         final_score = base_score * penalty
 
         scored.append((g, final_score))
 
+    # 점수 내림차순 정렬 후 상위 top_k개 반환
     scored.sort(key=lambda x: x[1], reverse=True)
     return scored[:top_k]

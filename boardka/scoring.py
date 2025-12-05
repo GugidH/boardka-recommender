@@ -7,19 +7,14 @@ from .models import Game
 MAX_TAG_SCORE = 60.0
 MAX_DIFF_SCORE = 40.0
 
-# 난이도 기본값: 사용자가 입력하지 않았을 때
-DEFAULT_DESIRED_DIFFICULTY = 2
-
 
 def compute_tag_score(game: Game, desired_tags: List[str]) -> float:
     """
-    게임의 태그와 사용자가 입력한 태그가 겹치는 정도에 따라
-    0 ~ 40점 사이의 점수를 계산
+    선택 태그 점수 계산 (0 ~ 60)
     """
     if not desired_tags or not game.tags:
         return 0.0
 
-    # 공백 제거 후 집합으로 변환
     desired = {t.strip() for t in desired_tags if t.strip()}
     actual = {t.strip() for t in game.tags if t.strip()}
 
@@ -30,28 +25,39 @@ def compute_tag_score(game: Game, desired_tags: List[str]) -> float:
     if overlap == 0:
         return 0.0
 
-    # 원하는 태그 중 몇 개나 맞았는지 비율 (0.0 ~ 1.0)
     ratio = overlap / len(desired)
-
-    # 0.0 ~ 1.0 → 0 ~ 40점으로 스케일링
     return MAX_TAG_SCORE * ratio
 
 
-def compute_difficulty_score(
-    game: Game,
-    desired_difficulty: Optional[int],
-) -> float:
+def compute_preferred_score(game: Game, preferred_tags: List[str]) -> float:
     """
-    게임 난이도와 사용자 입력 난이도의 차이에 따라
-    0 ~ 40점 사이의 점수를 계산
+    선호 태그 점수 계산 (선택 태그보다 약한 0.3배)
+    """
+    if not preferred_tags or not game.tags:
+        return 0.0
+
+    preferred = {t.strip() for t in preferred_tags if t.strip()}
+    actual = {t.strip() for t in game.tags if t.strip()}
+
+    overlap = len(preferred & actual)
+    if overlap == 0:
+        return 0.0
+
+    ratio = overlap / len(preferred)
+    return (MAX_TAG_SCORE * ratio) * 0.3   # 0.3배 반영
+
+
+def compute_difficulty_score(game: Game, desired_difficulty: Optional[int]) -> float:
+    """
+    난이도 점수 계산.
+    - 난이도 입력 없는 경우 난이도 무시(0점, 패널티 없음)
+    - 입력된 경우에만 0 ~ 40점 계산
     """
     if desired_difficulty is None:
-        desired_difficulty = DEFAULT_DESIRED_DIFFICULTY
+        return 0.0  # 난이도 무시
 
-    # 타입 문제 방지
     gd = int(game.difficulty)
     dd = int(desired_difficulty)
-
     diff = abs(gd - dd)
 
     if diff == 0:
@@ -64,16 +70,16 @@ def compute_difficulty_score(
 
 def score_game(
     game: Game,
-    desired_tags: List[str],
+    selected_tags: List[str],
+    preferred_tags: List[str],
     desired_difficulty: Optional[int],
 ) -> float:
     """
-    태그, 난이도로 기본 점수 계산
-    시간/인원 관련 페널티는 recommender.py 쪽에서 따로 처리
-
-    반환값: 0 ~ 100점 사이 (태그 최대 60 + 난이도 최대 40)
+    선택 태그(0~60), 선호 태그(0~18), 난이도(0~40) 합산.
     """
-    tag_score = compute_tag_score(game, desired_tags)
-    difficulty_score = compute_difficulty_score(game, desired_difficulty)
+    tag_score = compute_tag_score(game, selected_tags)
+    pref_score = compute_preferred_score(game, preferred_tags)
+    diff_score = compute_difficulty_score(game, desired_difficulty)
 
-    return tag_score + difficulty_score
+    return tag_score + pref_score + diff_score
+
