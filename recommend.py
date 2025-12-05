@@ -53,7 +53,7 @@ def main():
         target_time=args.time,
         desired_tags=args.tags,
         desired_difficulty=args.difficulty,  
-        top_k=args.top_k,
+        top_k=5,
     )
 
 
