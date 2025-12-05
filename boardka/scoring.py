@@ -4,7 +4,7 @@ from typing import List, Optional
 from .models import Game
 
 # 상수 정의: 태그 / 난이도 최대 점수
-MAX_TAG_SCORE = 40.0
+MAX_TAG_SCORE = 60.0
 MAX_DIFF_SCORE = 40.0
 
 # 난이도 기본값: 사용자가 입력하지 않았을 때
@@ -71,7 +71,7 @@ def score_game(
     태그, 난이도로 기본 점수 계산
     시간/인원 관련 페널티는 recommender.py 쪽에서 따로 처리
 
-    반환값: 0 ~ 80점 사이 (태그 최대 40 + 난이도 최대 40)
+    반환값: 0 ~ 100점 사이 (태그 최대 60 + 난이도 최대 40)
     """
     tag_score = compute_tag_score(game, desired_tags)
     difficulty_score = compute_difficulty_score(game, desired_difficulty)
