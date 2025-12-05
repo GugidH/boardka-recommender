@@ -134,7 +134,10 @@ py app.py
 
 py gui.py
 
+(데모버전)
 ![GUI Example](images/GUI_DEMO.png)
+
+(최종본)
 ![GUI Example](images/GUI_FINAL.png)
 ![GUI Example](images/GUI_ACT.png)
 
