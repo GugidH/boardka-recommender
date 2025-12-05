@@ -24,10 +24,16 @@ def parse_args():
         help="목표 플레이 시간(분 단위)",
     )
     parser.add_argument(
+        "--difficulty",
+        type=int,
+        default=None,
+        help="원하는 난이도(1~5). 입력하지 않으면 기본값 2로 설정됨."
+    )
+    parser.add_argument(
         "--tags",
         nargs="*",
         default=[],
-        help="선호 태그들 (현재는 기능 약함, 나중에 확장)",
+        help="선호 태그들",
     )
     parser.add_argument(
         "--top-k",
@@ -46,8 +52,10 @@ def main():
         players=args.players,
         target_time=args.time,
         desired_tags=args.tags,
+        desired_difficulty=args.difficulty,  
         top_k=args.top_k,
     )
+
 
     print("\n=== 추천 결과 ===")
     if not results:
@@ -55,14 +63,17 @@ def main():
         return
 
     for rank, (game, score) in enumerate(results, start=1):
+        tags_str = ", ".join(game.tags) if game.tags else "(태그 없음)"
         print(f"[{rank}] {game.name_ko}")
         print(
             f"    인원: {game.min_players}~{game.max_players}명, "
             f"시간: {game.min_time}~{game.max_time}분, "
             f"난이도: {game.difficulty}/5"
         )
+        print(f"    태그: {tags_str}")
         print(f"    점수: {score:.3f}")
         print()
+
 
 if __name__ == "__main__":
     main()

@@ -1,45 +1,79 @@
-from typing import List, Dict
+# boardka/scoring.py
+
+from typing import List, Optional
 from .models import Game
+
+# 상수 정의: 태그 / 난이도 최대 점수
+MAX_TAG_SCORE = 40.0
+MAX_DIFF_SCORE = 40.0
+
+# 난이도 기본값: 사용자가 입력하지 않았을 때
+DEFAULT_DESIRED_DIFFICULTY = 2
+
+
+def compute_tag_score(game: Game, desired_tags: List[str]) -> float:
+    """
+    게임의 태그와 사용자가 입력한 태그가 겹치는 정도에 따라
+    0 ~ 40점 사이의 점수를 계산
+    """
+    if not desired_tags or not game.tags:
+        return 0.0
+
+    # 공백 제거 후 집합으로 변환
+    desired = {t.strip() for t in desired_tags if t.strip()}
+    actual = {t.strip() for t in game.tags if t.strip()}
+
+    if not desired or not actual:
+        return 0.0
+
+    overlap = len(desired & actual)
+    if overlap == 0:
+        return 0.0
+
+    # 원하는 태그 중 몇 개나 맞았는지 비율 (0.0 ~ 1.0)
+    ratio = overlap / len(desired)
+
+    # 0.0 ~ 1.0 → 0 ~ 40점으로 스케일링
+    return MAX_TAG_SCORE * ratio
+
+
+def compute_difficulty_score(
+    game: Game,
+    desired_difficulty: Optional[int],
+) -> float:
+    """
+    게임 난이도와 사용자 입력 난이도의 차이에 따라
+    0 ~ 40점 사이의 점수를 계산
+    """
+    if desired_difficulty is None:
+        desired_difficulty = DEFAULT_DESIRED_DIFFICULTY
+
+    # 타입 문제 방지
+    gd = int(game.difficulty)
+    dd = int(desired_difficulty)
+
+    diff = abs(gd - dd)
+
+    if diff == 0:
+        return MAX_DIFF_SCORE
+    elif diff == 1:
+        return MAX_DIFF_SCORE * 0.4
+    else:
+        return 0.0
+
 
 def score_game(
     game: Game,
-    players: int,
-    target_time: int,
     desired_tags: List[str],
-    weight: Dict[str, float] | None = None,
+    desired_difficulty: Optional[int],
 ) -> float:
-    if weight is None:
-        weight = {
-            "players": 3.0,
-            "time": 2.0,
-            "tags": 2.0,
-            "difficulty": 1.0,
-        }
+    """
+    태그, 난이도로 기본 점수 계산
+    시간/인원 관련 페널티는 recommender.py 쪽에서 따로 처리
 
-    score = 0.0
+    반환값: 0 ~ 80점 사이 (태그 최대 40 + 난이도 최대 40)
+    """
+    tag_score = compute_tag_score(game, desired_tags)
+    difficulty_score = compute_difficulty_score(game, desired_difficulty)
 
-    # 1) 인원수 적합도
-    if game.supports_player_count(players):
-        score += weight["players"]
-    else:
-        score -= weight["players"]
-
-    # 2) 시간 적합도 (중간값 기준)
-    mid_time = (game.min_time + game.max_time) / 2
-    diff = abs(mid_time - target_time)
-    time_score = max(0.0, 1.0 - diff / 60.0)  # 60분 이상 차이면 0점
-    score += weight["time"] * time_score
-
-    # 3) 태그 (지금은 태그 없으니 거의 0일 것)
-    if desired_tags and game.tags:
-        overlap = len(set(game.tags) & set(desired_tags))
-        union = len(set(game.tags) | set(desired_tags))
-        tag_score = overlap / union if union > 0 else 0.0
-        score += weight["tags"] * tag_score
-
-    # 4) 난이도 (적당히 3 정도를 이상적인 난이도로 가정)
-    ideal_diff = 3
-    diff_score = max(0.0, 1.0 - abs(game.difficulty - ideal_diff) / 4.0)
-    score += weight["difficulty"] * diff_score
-
-    return score
+    return tag_score + difficulty_score
