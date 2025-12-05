@@ -1,4 +1,4 @@
-\# Boardka Recommender
+# Boardka Recommender
 
 
 
@@ -18,17 +18,17 @@ CLI(Command Line Interface) 버전과 GUI(Graphical User Interface) 버전 모�
 
 
 
-\## 1. 주요 기능
+## 1. 주요 기능
 
 
 
-\- \*\*플레이어 수 필터링\*\*  
+- **플레이어 수 필터링**  
 
 &nbsp; 지정된 인원에서 플레이 가능한 게임만 선택된다.
 
 
 
-\- \*\*플레이 시간 필터링\*\*  
+- **플레이 시간 필터링**  
 
 &nbsp; 시간 입력 시 ±30분 범위까지 허용하며, 범위 내에서는 가중치가 감소한다.  
 
@@ -36,7 +36,7 @@ CLI(Command Line Interface) 버전과 GUI(Graphical User Interface) 버전 모�
 
 
 
-\- \*\*태그 기반 추천\*\*  
+- **태그 기반 추천**  
 
 &nbsp; 태그별 게임 개수를 자동 계산하여 GUI에서 체크박스로 제공한다.  
 
@@ -44,7 +44,7 @@ CLI(Command Line Interface) 버전과 GUI(Graphical User Interface) 버전 모�
 
 
 
-\- \*\*난이도 기반 추천\*\*  
+- **난이도 기반 추천**  
 
 &nbsp; 난이도는 1~5 사이 정수이며, 입력하지 않을 경우 기본값 2로 간주한다.  
 
@@ -52,7 +52,7 @@ CLI(Command Line Interface) 버전과 GUI(Graphical User Interface) 버전 모�
 
 
 
-\- \*\*추천 결과\*\*  
+- **추천 결과**  
 
 &nbsp; 최종적으로 계산된 점수를 기준으로 상위 5개의 게임을 출력한다.
 
@@ -62,7 +62,7 @@ CLI(Command Line Interface) 버전과 GUI(Graphical User Interface) 버전 모�
 
 
 
-\## 2. 추천 알고리즘 개요
+## 2. 추천 알고리즘 개요
 
 
 
@@ -70,21 +70,21 @@ CLI(Command Line Interface) 버전과 GUI(Graphical User Interface) 버전 모�
 
 
 
-\### (1) Base Score (0~100점)
+### (1) Base Score (0~100점)
 
-\- 태그 일치도: 최대 60점  
+- 태그 일치도: 최대 60점  
 
-\- 난이도 일치도: 최대 40점
+- 난이도 일치도: 최대 40점
 
 
 
-\### (2) Penalty 적용
+### (2) Penalty 적용
 
-\- 플레이어 수가 맞지 않을 경우 해당 게임은 제외된다.
+- 플레이어 수가 맞지 않을 경우 해당 게임은 제외된다.
 
-\- 시간 미입력 시 패널티 없음.
+- 시간 미입력 시 패널티 없음.
 
-\- 시간 입력 시  
+- 시간 입력 시  
 
 &nbsp; - 정확한 범위: 패널티 없음  
 
@@ -94,9 +94,9 @@ CLI(Command Line Interface) 버전과 GUI(Graphical User Interface) 버전 모�
 
 
 
-\*\*최종 점수 계산식\*\*
+**최종 점수 계산식**
 
-final\_score = base\_score \* penalty
+final\_score = base_score \* penalty
 
 
 
@@ -104,7 +104,7 @@ final\_score = base\_score \* penalty
 
 
 
-\## 3. 프로젝트 구조
+## 3. 프로젝트 구조
 
 
 
@@ -138,29 +138,29 @@ boardka-recommender/
 
 
 
-\## 4. 실행 방법
+## 4. 실행 방법
 
 
 
-\### 4.1. 의존성 설치
+### 4.1. 의존성 설치
 
 py -m pip install pandas openpyxl
 
 
 
-\### 4.2. CLI 실행
+### 4.2. CLI 실행
 
 py app.py
 
-!\[CLI Example](images/CLI.png)
+![CLI Example](images/CLI.png)
 
 
 
-\### 4.3. GUI 실행
+### 4.3. GUI 실행
 
 py gui.py
 
-!\[GUI Example](images/GUI.png)
+![GUI Example](images/GUI.png)
 
 
 
@@ -168,7 +168,7 @@ py gui.py
 
 
 
-\## 5. 데이터 형식 (GameList.xlsx)
+## 5. 데이터 형식 (GameList.xlsx)
 
 
 
@@ -197,6 +197,7 @@ py gui.py
 
 
 예시: 
+![LIST EXAMPLE](images/LIST.png)
 
 
 
@@ -204,7 +205,7 @@ py gui.py
 
 
 
-\## 6. 참고한 자료
+## 6. 참고한 자료
 
 
 
@@ -216,7 +217,7 @@ py gui.py
 
 
 
-\## 7. License
+## 7. License
 
 
 
@@ -270,23 +271,15 @@ SOFTWARE.
 
 
 
-\## 8. 향후 개선 가능성
+## 8. 향후 개선 가능성
 
 
 
-\- 태그 자동 추천 기능  
+- 태그 자동 추천 기능  
 
-\- 사용자 선호도 학습 기능  
+- 사용자 선호도 학습 기능  
 
-\- 웹 기반 UI 추가 가능성  
-
-
-
-
-
-
-
-
+- 웹 기반 UI 추가 가능성  
 
 
 
