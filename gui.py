@@ -62,9 +62,11 @@ class BoardGameRecommenderGUI:
         tags_frame.columnconfigure(2, weight=1)
 
         # 태그 체크박스 생성 (게임 개수 포함)
+        filtered_tags = {tag: count for tag, count in self.tag_counts.items() if count > 3}
+
         # 정렬: 게임 개수 많은 순 → 이름순
         sorted_tags = sorted(
-            self.tag_counts.items(),
+            filtered_tags.items(),
             key=lambda item: (-item[1], item[0])
         )
 

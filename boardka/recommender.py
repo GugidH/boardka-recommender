@@ -17,6 +17,7 @@ def recommend_games(
     scored = []
 
     for g in games:
+        
         # 인원 필터 필수
         if not g.supports_player_count(players):
             continue
