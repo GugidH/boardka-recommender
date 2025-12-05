@@ -135,10 +135,13 @@ py app.py
 py gui.py
 
 (데모버전)
+
 ![GUI Example](images/GUI_DEMO.png)
 
 (최종본)
+
 ![GUI Example](images/GUI_FINAL.png)
+
 ![GUI Example](images/GUI_ACT.png)
 
 
@@ -154,23 +157,15 @@ py gui.py
 
 
 
-| 컬럼명 | 설명 |
-
-|--------|------|
-
-| name\_ko | 게임 이름(한글) |
-
-| min\_players | 최소 인원 |
-
-| max\_players | 최대 인원 |
-
-| min\_time | 최소 플레이 시간 |
-
-| max\_time | 최대 플레이 시간 |
-
-| difficulty | 난이도(1~5) |
-
-| tags | 쉼표로 구분된 태그 문자열 |
+| 컬럼명       | 설명                  |
+|-------------|-----------------------|
+| name_ko     | 게임 이름(한글)        |
+| min_players | 최소 인원             |
+| max_players | 최대 인원             |
+| min_time    | 최소 플레이 시간       |
+| max_time    | 최대 플레이 시간       |
+| difficulty  | 난이도(1~5)           |
+| tags        | 쉼표로 구분된 태그 문자열 |
 
 
 
